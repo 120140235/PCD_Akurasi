@@ -2,97 +2,161 @@ import cv2
 import numpy as np
 
 
-def canny(image, sigma):
-    # Grayscale the image
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def canny(img):
+    """
+    Melakukan edge detection menggunakan metode Canny
 
-    # Apply Gaussian blur
-    blur = cv2.GaussianBlur(gray, (5, 5), sigma)
+    Args:
+      img: Citra input
 
-    # Compute the gradient magnitude and direction
-    grad_x, grad_y = cv2.Sobel(blur, cv2.CV_64F, 1, 0, ksize=3)
-    grad_magnitude = np.sqrt(grad_x**2 + grad_y**2)
-    grad_direction = np.arctan2(grad_y, grad_x)
+    Returns:
+       Citra output hasil edge detection
+    """
 
-    # Apply non-maximum suppression
-    non_max_suppression = cv2.threshold(
-        grad_magnitude, 0.0, 255.0, cv2.THRESH_BINARY, cv2.THRESH_OTSU)
+    # Menentukan nilai threshold atas dan bawah
+    threshold_atas = 100
+    threshold_bawah = 50
 
-    # Apply double thresholding
-    threshold_low = 0.5 * non_max_suppression.max()
-    threshold_high = 0.8 * non_max_suppression.max()
-    edges = cv2.Canny(non_max_suppression, threshold_low, threshold_high)
+    # Melakukan edge detection
+    edges = cv2.Canny(img, threshold_atas, threshold_bawah)
 
     return edges
 
 
-def prewitt(image):
-    # Grayscale the image
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def sobel(img):
+    """
+    Melakukan edge detection menggunakan metode Sobel
 
-    # Apply Sobel filter
-    edges = cv2.filter2D(
-        gray, -1, np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]]))
+    Args:
+      img: Citra input
 
-    return edges
+    Returns:
+       Citra output hasil edge detection
+    """
 
+    # Menentukan arah gradien
+    arah = cv2.cv.CV_8UC1
 
-def sobel(image):
-    # Grayscale the image
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # Apply Sobel filter
-    edges = cv2.filter2D(
-        gray, -1, np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
+    # Melakukan edge detection
+    edges = cv2.cv.Sobel(img, arah, 1, 0)
 
     return edges
 
 
-def roberts(image):
-    # Grayscale the image
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def prewitt(img):
+    """
+    Melakukan edge detection menggunakan metode Prewitt
 
-    # Apply Roberts filter
-    edges = cv2.filter2D(gray, -1, np.array([[1, 0], [0, -1]])) + \
-        cv2.filter2D(gray, -1, np.array([[0, 1], [-1, 0]]))
+    Args:
+      img: Citra input
+
+    Returns:
+       Citra output hasil edge detection
+    """
+
+    # Menentukan arah gradien
+    arah = cv2.cv.CV_8UC1
+
+    # Melakukan edge detection
+    edges = cv2.cv.Prewitt(img, arah, 1, 0)
 
     return edges
 
 
-def calculate_accuracy(image, edges, ground_truth):
-    # Find the contours in the edges image
-    contours, hierarchy = cv2.findContours(
-        edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+def roberts(img):
+    """
+    Melakukan edge detection menggunakan metode Roberts
 
-    # Initialize the true and false positive counts
-    true_positives = 0
-    false_positives = 0
+    Args:
+      img: Citra input
 
-    # Iterate over the contours
-    for contour in contours:
-        # Get the bounding box of the contour
-        x, y, w, h = cv2.boundingRect(contour)
+    Returns:
+       Citra output hasil edge detection
+    """
 
-        # Check if the bounding box intersects with the ground truth
-        if x >= ground_truth[0] and x <= ground_truth[2] and y >= ground_truth[1] and y <= ground_truth[3]:
-            # The contour is a true positive
-            true_positives += 1
-        else:
-            # The contour is a false positive
-            false_positives += 1
+    # Menentukan arah gradien
+    arah = cv2.cv.CV_8UC1
 
-    # Calculate the accuracy
-    accuracy = true_positives / (true_positives + false_positives)
+    # Melakukan edge detection
+    edges = cv2.cv.Roberts(img, arah)
 
-    return accuracy
+    return edges
+
+
+def get_accuracy(img, edges):
+    """
+    Menghitung akurasi edge detection
+
+    Args:
+      img: Citra input
+      edges: Citra output hasil edge detection
+
+    Returns:
+       Akurasi edge detection
+    """
+
+    # Menghitung jumlah piksel tepi pada citra asli
+    jumlah_piksel_tepi_asli = np.sum(img > 0)
+
+    # Menghitung jumlah piksel tepi pada citra hasil edge detection
+    jumlah_piksel_tepi_deteksi = np.sum(edges > 0)
+
+    # Menghitung akurasi edge detection
+    akurasi = jumlah_piksel_tepi_deteksi / jumlah_piksel_tepi_asli
+
+    return akurasi
 
 
 def main():
-    # Load the image
-    image = cv2.imread("CM_matang1.jpg")
+    # Membaca 6 gambar
+    img1 = cv2.imread("CM_matang1.jpg")
+    img2 = cv2.imread("CM_matang2.jpg")
+    img3 = cv2.imread("CM_matang3.jpg")
+    img4 = cv2.imread("CM_matang4.jpg")
+    img5 = cv2.imread("CM_matang5.jpg")
+    img6 = cv2.imread("CM_matang6.jpg")
 
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Menentukan nilai threshold atas dan bawah
+    threshold_atas = 100
+    threshold_bawah = 50
 
-    # Apply Canny edge detection
-    edges_canny = canny
+    # Melakukan edge detection
+    edges_canny1 = canny(img1)
+    edges_canny2 = canny(img2)
+    edges_canny3 = canny(img3)
+    edges_canny4 = canny(img4)
+    edges_canny5 = canny(img5)
+    edges_canny6 = canny(img6)
+
+    edges_sobel1 = sobel(img1)
+    edges_sobel2 = sobel(img2)
+    edges_sobel3 = sobel(img3)
+    edges_sobel4 = sobel(img4)
+    edges_sobel5 = sobel(img5)
+    edges_sobel6 = sobel(img6)
+
+    edges_prewitt1 = prewitt(img1)
+    edges_prewitt2 = prewitt(img2)
+    edges_prewitt3 = prewitt(img3)
+    edges_prewitt4 = prewitt(img4)
+    edges_prewitt5 = prewitt(img5)
+    edges_prewitt6 = prewitt(img6)
+
+    # Menampilkan hasil edge detection
+    cv2.imshow("Canny 1", edges_canny1)
+    cv2.imshow("Sobel 1", edges_sobel1)
+    cv2.imshow("Prewitt 1", edges_prewitt1)
+
+    # Menampilkan akurasi edge detection
+    akurasi_canny1 = get_accuracy(img1, edges_canny1)
+    akurasi_sobel1 = get_accuracy(img1, edges_sobel1)
+    akurasi_prewitt1 = get_accuracy(img1, edges_prewitt1)
+    print("Akurasi Canny 1:", akurasi_canny1)
+    print("Akurasi Sobel 1:", akurasi_sobel1)
+    print("Akurasi Prewitt 1:", akurasi_prewitt1)
+
+    cv2.waitKey(0)
+
+
+if __name__ == "__main__":
+    main()

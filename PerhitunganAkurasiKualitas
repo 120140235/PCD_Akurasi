@@ -142,21 +142,29 @@ def main():
     edges_prewitt5 = prewitt(img5)
     edges_prewitt6 = prewitt(img6)
 
+    edges_roberts1 = roberts(img1)
+    edges_roberts2 = roberts(img2)
+    edges_roberts3 = roberts(img3)
+    edges_roberts4 = roberts(img4)
+    edges_roberts5 = roberts(img5)
+    edges_roberts6 = roberts(img6)
+
     # Menampilkan hasil edge detection
     cv2.imshow("Canny 1", edges_canny1)
     cv2.imshow("Sobel 1", edges_sobel1)
     cv2.imshow("Prewitt 1", edges_prewitt1)
+    cv2.imshow("roberts 1", edges_roberts1)
 
     # Menampilkan akurasi edge detection
     akurasi_canny1 = get_accuracy(img1, edges_canny1)
     akurasi_sobel1 = get_accuracy(img1, edges_sobel1)
     akurasi_prewitt1 = get_accuracy(img1, edges_prewitt1)
+    akurasi_roberts1 = get_accuracy(img1, edges_roberts1)
+
     print("Akurasi Canny 1:", akurasi_canny1)
     print("Akurasi Sobel 1:", akurasi_sobel1)
     print("Akurasi Prewitt 1:", akurasi_prewitt1)
+    print("Akurasi roberts 1:", akurasi_roberts1)
 
-    cv2.waitKey(0)
-
-
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()

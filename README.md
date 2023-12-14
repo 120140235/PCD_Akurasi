@@ -1,4 +1,5 @@
 Dibuat oleh: 
+
 Nama: Edinta Bahagia
 Nim: 120140235
 
@@ -10,3 +11,6 @@ Pada bagian dibawah ini dapat diganti dengan gambar 6 lainnya.
     img4 = cv2.imread("CM_matang4.jpg")
     img5 = cv2.imread("CM_matang5.jpg")
     img6 = cv2.imread("CM_matang6.jpg")
+
+dan pada setiap gambar ditambahkan seperti : /image/"namagambar.jpg 
+untuk menampilkan gambarnya pada path yang telah disimpan.
